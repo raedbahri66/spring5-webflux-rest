@@ -65,4 +65,32 @@ class CategoryControllerTest {
                 .expectStatus()
                 .isCreated();
     }
+
+    @Test
+    void testUpdate() {
+        BDDMockito.given(categoryRepository.save(any(Category.class)))
+                .willReturn(Mono.just(Category.builder().name("desc").build()));
+
+        Mono<Category> categoryMono = Mono.just(Category.builder().name("desc").build());
+
+        webTestClient.put().uri("/api/v1/categories/id").body(categoryMono,Category.class)
+                .exchange()
+                .expectStatus()
+                .isOk();
+    }
+
+    @Test
+    void testPatch() {
+        BDDMockito.given(categoryRepository.save(any(Category.class)))
+                .willReturn(Mono.just(Category.builder().name("desc").build()));
+        BDDMockito.given(categoryRepository.findById(anyString()))
+                .willReturn(Mono.just(Category.builder().name("desc").build()));
+
+        Mono<Category> categoryMono = Mono.just(Category.builder().name("desc").build());
+
+        webTestClient.patch().uri("/api/v1/categories/id").body(categoryMono,Category.class)
+                .exchange()
+                .expectStatus()
+                .isOk();
+    }
 }
